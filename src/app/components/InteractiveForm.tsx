@@ -29,6 +29,7 @@ export function InteractiveForm() {
     cidade: "",
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [focusedField, setFocusedField] = useState<string | null>(null);
 
   const fields = [
@@ -73,11 +74,64 @@ export function InteractiveForm() {
   const filledFields = Object.values(formData).filter(value => value.trim() !== "").length;
   const progress = (filledFields / fields.length) * 100;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isFormValid) {
-      console.log("Form submitted:", formData);
+    if (!isFormValid || isSubmitting) {
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+
+      const webhookUrl = import.meta.env.VITE_GSHEETS_WEBHOOK_URL?.trim();
+      const token = import.meta.env.VITE_GSHEETS_TOKEN?.trim();
+      const sheetName = import.meta.env.VITE_SHEET_NAME?.trim() || "Leads Podcasts";
+
+      if (import.meta.env.DEV) {
+        const tokenPreview = token ? `${token.slice(0, 8)}...` : "missing";
+        console.log("[gsheets] submitting", { webhookUrl, tokenPreview, sheetName });
+      }
+
+      if (!webhookUrl || !token) {
+        const missingVars = [
+          !webhookUrl ? "VITE_GSHEETS_WEBHOOK_URL" : null,
+          !token ? "VITE_GSHEETS_TOKEN" : null,
+        ]
+          .filter(Boolean)
+          .join(", ");
+        throw new Error(`Configuracao ausente: ${missingVars}.`);
+      }
+
+      if (token.startsWith("$2") && !/^\$2[aby]\$\d{2}\$/.test(token)) {
+        throw new Error('Token invalido no .env. Escape "$" como "\\$" e reinicie o vite.');
+      }
+
+      const payload = new URLSearchParams({
+        token,
+        sheet_name: sheetName,
+        nome: formData.nome,
+        email: formData.email,
+        telefone: formData.telefone,
+        estado: formData.estado,
+        cidade: formData.cidade,
+        submittedAt: new Date().toISOString(),
+      });
+      const payloadString = payload.toString();
+
+      await fetch(`${webhookUrl}?${payloadString}`, {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+        },
+        body: payloadString,
+      });
+
       setIsSubmitted(true);
+    } catch (error) {
+      console.error("Erro ao enviar formulário:", error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -272,17 +326,17 @@ export function InteractiveForm() {
         {/* Submit Button */}
         <motion.button
           type="submit"
-          whileHover={{ scale: isFormValid ? 1.02 : 1 }}
-          whileTap={{ scale: isFormValid ? 0.98 : 1 }}
-          disabled={!isFormValid}
+          whileHover={{ scale: isFormValid && !isSubmitting ? 1.02 : 1 }}
+          whileTap={{ scale: isFormValid && !isSubmitting ? 0.98 : 1 }}
+          disabled={!isFormValid || isSubmitting}
           className={`w-full mt-8 px-8 py-5 rounded-2xl flex items-center justify-center gap-3 transition-all duration-300 text-lg font-semibold ${
-            isFormValid
+            isFormValid && !isSubmitting
               ? "bg-gradient-to-r from-[#f4d03f] to-[#ffd700] text-[#1a4d2e] shadow-lg hover:shadow-2xl cursor-pointer"
               : "bg-gray-200 text-gray-400 cursor-not-allowed"
           }`}
         >
           <span>Quero conhecer o curso</span>
-          {isFormValid && (
+          {isFormValid && !isSubmitting && (
             <motion.div
               animate={{ x: [0, 5, 0] }}
               transition={{ duration: 1.5, repeat: Infinity }}
