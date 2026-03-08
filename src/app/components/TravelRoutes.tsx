@@ -17,14 +17,28 @@ interface Route {
 
 export function TravelRoutes() {
   const { scrollYProgress } = useScroll();
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(true);
+  const [supportsMotionPath, setSupportsMotionPath] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    const checkMotionPathSupport = () => {
+      try {
+        setSupportsMotionPath(CSS.supports("offset-path", 'path("M 0 0 L 1 1")'));
+      } catch {
+        setSupportsMotionPath(false);
+      }
+    };
+
     checkMobile();
+    checkMotionPathSupport();
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
+
+  if (isMobile || !supportsMotionPath) {
+    return null;
+  }
 
   const routes: Route[] = [
     {
@@ -132,7 +146,7 @@ export function TravelRoutes() {
                 d={`M ${route.startX} ${route.startY} C ${route.controlX1} ${route.controlY1}, ${route.controlX2} ${route.controlY2}, ${route.endX} ${route.endY}`}
                 fill="none"
                 stroke="url(#routeGradient)"
-                strokeWidth={isMobile ? "1" : "1.5"}
+                strokeWidth="1.5"
                 strokeDasharray="10 5"
                 initial={{ pathLength: 0, opacity: 0 }}
                 style={{
@@ -145,7 +159,7 @@ export function TravelRoutes() {
               <motion.circle
                 cx={route.startX}
                 cy={route.startY}
-                r={isMobile ? "3" : "4"}
+                r="4"
                 fill="#f4d03f"
                 initial={{ scale: 0, opacity: 0 }}
                 style={{
@@ -158,7 +172,7 @@ export function TravelRoutes() {
               <motion.circle
                 cx={route.startX}
                 cy={route.startY}
-                r={isMobile ? "6" : "8"}
+                r="8"
                 fill="none"
                 stroke="#f4d03f"
                 strokeWidth="1"
@@ -173,7 +187,7 @@ export function TravelRoutes() {
               <motion.circle
                 cx={route.endX}
                 cy={route.endY}
-                r={isMobile ? "3" : "4"}
+                r="4"
                 fill="#ffd700"
                 initial={{ scale: 0, opacity: 0 }}
                 style={{
@@ -186,7 +200,7 @@ export function TravelRoutes() {
               <motion.circle
                 cx={route.endX}
                 cy={route.endY}
-                r={isMobile ? "6" : "8"}
+                r="8"
                 fill="none"
                 stroke="#ffd700"
                 strokeWidth="1"
@@ -225,37 +239,33 @@ export function TravelRoutes() {
           
           return (
             <div key={`labels-${route.id}`}>
-              {!isMobile && (
-                <>
-                  {/* Start city label */}
-                  <motion.div
-                    className="absolute text-xs font-serif text-[#1a4d2e] bg-[#f4d03f]/90 px-2 py-1 rounded backdrop-blur-sm whitespace-nowrap"
-                    style={{
-                      left: route.startX,
-                      top: route.startY,
-                      x: "-50%",
-                      y: "20px",
-                      opacity: useTransform(progress, [0, 0.2, 0.8, 1], [0, 1, 1, 0.5]),
-                    }}
-                  >
-                    {route.city1}
-                  </motion.div>
+              {/* Start city label */}
+              <motion.div
+                className="absolute text-xs font-serif text-[#1a4d2e] bg-[#f4d03f]/90 px-2 py-1 rounded backdrop-blur-sm whitespace-nowrap"
+                style={{
+                  left: route.startX,
+                  top: route.startY,
+                  x: "-50%",
+                  y: "20px",
+                  opacity: useTransform(progress, [0, 0.2, 0.8, 1], [0, 1, 1, 0.5]),
+                }}
+              >
+                {route.city1}
+              </motion.div>
 
-                  {/* End city label */}
-                  <motion.div
-                    className="absolute text-xs font-serif text-[#1a4d2e] bg-[#ffd700]/90 px-2 py-1 rounded backdrop-blur-sm whitespace-nowrap"
-                    style={{
-                      left: route.endX,
-                      top: route.endY,
-                      x: "-50%",
-                      y: "-30px",
-                      opacity: useTransform(progress, [0, 0.8, 1], [0, 0, 1]),
-                    }}
-                  >
-                    {route.city2}
-                  </motion.div>
-                </>
-              )}
+              {/* End city label */}
+              <motion.div
+                className="absolute text-xs font-serif text-[#1a4d2e] bg-[#ffd700]/90 px-2 py-1 rounded backdrop-blur-sm whitespace-nowrap"
+                style={{
+                  left: route.endX,
+                  top: route.endY,
+                  x: "-50%",
+                  y: "-30px",
+                  opacity: useTransform(progress, [0, 0.8, 1], [0, 0, 1]),
+                }}
+              >
+                {route.city2}
+              </motion.div>
             </div>
           );
         })}

@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { AnimatedBackground } from "./components/AnimatedBackground";
 import { TravelRoutes } from "./components/TravelRoutes";
 import { HeroSection } from "./components/HeroSection";
@@ -6,6 +7,15 @@ import { StatsSection } from "./components/StatsSection";
 import { Footer } from "./components/Footer";
 
 export default function App() {
+  const [showDesktopEffects, setShowDesktopEffects] = useState(false);
+
+  useEffect(() => {
+    const checkViewport = () => setShowDesktopEffects(window.innerWidth >= 768);
+    checkViewport();
+    window.addEventListener("resize", checkViewport);
+    return () => window.removeEventListener("resize", checkViewport);
+  }, []);
+
   return (
     <div className="min-h-screen relative overflow-x-hidden bg-gradient-to-br from-[#f9f7f3] via-[#faf8f5] to-[#f5f3ed]">
       {/* Subtle texture overlay */}
@@ -16,14 +26,18 @@ export default function App() {
       />
       
       {/* Radial gradient overlays for depth */}
-      <div className="fixed inset-0 pointer-events-none z-0">
+      <div className="fixed inset-0 pointer-events-none z-0 hidden md:block">
         <div className="absolute top-0 left-0 w-[800px] h-[800px] bg-[#1a4d2e]/[0.02] rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2" />
         <div className="absolute top-1/3 right-0 w-[600px] h-[600px] bg-[#f4d03f]/[0.03] rounded-full blur-[100px] translate-x-1/3" />
         <div className="absolute bottom-0 left-1/3 w-[700px] h-[700px] bg-[#1a4d2e]/[0.015] rounded-full blur-[120px]" />
       </div>
 
-      <AnimatedBackground />
-      <TravelRoutes />
+      {showDesktopEffects && (
+        <>
+          <AnimatedBackground />
+          <TravelRoutes />
+        </>
+      )}
       
       <main className="relative z-10">
         <HeroSection />

@@ -65,7 +65,7 @@ export function ExperienceSection() {
   };
 
   return (
-    <section ref={sectionRef} className="relative py-32 px-4 md:px-8 lg:px-16 bg-gradient-to-b from-transparent via-white/40 to-transparent backdrop-blur-sm overflow-hidden">
+    <section ref={sectionRef} className="relative py-20 md:py-32 px-4 md:px-8 lg:px-16 bg-gradient-to-b from-transparent via-white/40 to-transparent md:backdrop-blur-sm overflow-hidden">
       {/* Floating decorative elements */}
       <motion.div
         style={{ y, opacity }}
@@ -95,7 +95,7 @@ export function ExperienceSection() {
             <span className="text-white font-serif">Experiências Transformadoras</span>
           </motion.div>
 
-          <h2 className="text-4xl md:text-5xl lg:text-7xl font-serif text-[#1a4d2e] leading-tight">
+          <h2 className="text-3xl md:text-5xl lg:text-7xl font-serif text-[#1a4d2e] leading-tight">
             Vivencie a hotelaria desde<br />
             <span className="text-[#f4d03f]">o primeiro semestre</span>
           </h2>
@@ -104,8 +104,34 @@ export function ExperienceSection() {
           </p>
         </motion.div>
 
+        {/* Mobile layout */}
+        <div className="md:hidden space-y-6">
+          {experiences.map((experience, index) => (
+            <div key={index} className="bg-white rounded-3xl overflow-hidden shadow-lg border border-[#1a4d2e]/10">
+              <div className="relative h-56 overflow-hidden">
+                <img src={experience.image} alt={experience.title} className="w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#1a4d2e]/75 via-[#1a4d2e]/25 to-transparent" />
+                <div className="absolute left-4 top-4 bg-[#f4d03f] p-3 rounded-2xl">
+                  <experience.icon className="w-6 h-6 text-[#1a4d2e]" />
+                </div>
+              </div>
+              <div className="p-6 space-y-4">
+                <h3 className="text-2xl font-serif text-[#1a4d2e]">{experience.title}</h3>
+                <p className="text-[#2d5016] leading-relaxed">{experience.description}</p>
+                <div className="flex flex-wrap gap-2">
+                  {experience.highlights.map((highlight, idx) => (
+                    <span key={idx} className="inline-block bg-[#f4d03f]/20 text-[#1a4d2e] px-3 py-1 rounded-full text-sm">
+                      {highlight}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
         {/* Modern Carousel */}
-        <div className="relative max-w-6xl mx-auto">
+        <div className="relative max-w-6xl mx-auto hidden md:block">
           <div className="relative h-[600px] md:h-[700px]">
             {experiences.map((experience, index) => {
               const offset = (index - currentSlide + experiences.length) % experiences.length;
@@ -252,9 +278,9 @@ export function ExperienceSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.3 }}
-          className="mt-32 relative"
+          className="mt-20 md:mt-32 relative"
         >
-          <div className="bg-gradient-to-br from-[#1a4d2e] via-[#2d5016] to-[#1a4d2e] rounded-[40px] p-12 md:p-16 text-white relative overflow-hidden shadow-2xl">
+          <div className="bg-gradient-to-br from-[#1a4d2e] via-[#2d5016] to-[#1a4d2e] rounded-[32px] md:rounded-[40px] p-8 md:p-16 text-white relative overflow-hidden shadow-2xl">
             {/* Animated background patterns */}
             <motion.div
               animate={{
@@ -262,7 +288,7 @@ export function ExperienceSection() {
                 rotate: [0, 90, 0],
               }}
               transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#f4d03f]/10 rounded-full blur-3xl"
+              className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#f4d03f]/10 rounded-full blur-3xl hidden md:block"
             />
             <motion.div
               animate={{
@@ -270,7 +296,7 @@ export function ExperienceSection() {
                 rotate: [0, -90, 0],
               }}
               transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-              className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#f4d03f]/10 rounded-full blur-3xl"
+              className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#f4d03f]/10 rounded-full blur-3xl hidden md:block"
             />
             
             <div className="relative z-10 grid md:grid-cols-2 gap-12 items-center">
