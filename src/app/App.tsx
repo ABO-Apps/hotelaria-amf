@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { AnimatedBackground } from "./components/AnimatedBackground";
-import { TravelRoutes } from "./components/TravelRoutes";
 import { HeroSection } from "./components/HeroSection";
 import { ExperienceSection } from "./components/ExperienceSection";
 import { StatsSection } from "./components/StatsSection";
@@ -35,7 +34,6 @@ export default function App() {
       {showDesktopEffects && (
         <>
           <AnimatedBackground />
-          <TravelRoutes />
         </>
       )}
       
