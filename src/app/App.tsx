@@ -3,6 +3,7 @@ import { AnimatedBackground } from "./components/AnimatedBackground";
 import { HeroSection } from "./components/HeroSection";
 import { ExperienceSection } from "./components/ExperienceSection";
 import { StatsSection } from "./components/StatsSection";
+import { SocialLinksSection } from "./components/SocialLinksSection";
 import { Footer } from "./components/Footer";
 
 export default function App() {
@@ -27,7 +28,7 @@ export default function App() {
       {/* Radial gradient overlays for depth */}
       <div className="fixed inset-0 pointer-events-none z-0 hidden md:block">
         <div className="absolute top-0 left-0 w-[800px] h-[800px] bg-[#1a4d2e]/[0.02] rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2" />
-        <div className="absolute top-1/3 right-0 w-[600px] h-[600px] bg-[#f4d03f]/[0.03] rounded-full blur-[100px] translate-x-1/3" />
+        <div className="absolute top-1/3 right-0 w-[600px] h-[600px] bg-[#d8aa2b]/[0.03] rounded-full blur-[100px] translate-x-1/3" />
         <div className="absolute bottom-0 left-1/3 w-[700px] h-[700px] bg-[#1a4d2e]/[0.015] rounded-full blur-[120px]" />
       </div>
 
@@ -41,6 +42,7 @@ export default function App() {
         <HeroSection />
         <ExperienceSection />
         <StatsSection />
+        <SocialLinksSection />
       </main>
       
       <Footer />

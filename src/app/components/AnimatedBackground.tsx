@@ -35,18 +35,18 @@ export function AnimatedBackground() {
             ease: "easeInOut",
           }}
         >
-          <element.Icon className="w-12 h-12 md:w-16 md:h-16 text-[#f4d03f]" />
+          <element.Icon className="w-12 h-12 md:w-16 md:h-16 text-[#d8aa2b]" />
         </motion.div>
       ))}
       
       {/* Passport stamp style elements */}
       <motion.div
-        className="absolute left-[15%] top-[30%] w-20 h-20 border-2 border-[#f4d03f] rounded-full opacity-20"
+        className="absolute left-[15%] top-[30%] w-20 h-20 border-2 border-[#d8aa2b] rounded-full opacity-20"
         animate={{ rotate: 360 }}
         transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
       />
       <motion.div
-        className="absolute right-[25%] bottom-[35%] w-24 h-24 border-2 border-[#f4d03f] rounded-full opacity-20"
+        className="absolute right-[25%] bottom-[35%] w-24 h-24 border-2 border-[#d8aa2b] rounded-full opacity-20"
         animate={{ rotate: -360 }}
         transition={{ duration: 70, repeat: Infinity, ease: "linear" }}
       />
